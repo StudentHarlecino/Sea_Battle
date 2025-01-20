@@ -16,5 +16,10 @@ namespace Sea_Battle
         {
             InitializeComponent();
         }
+
+        private void SeaBattleGame_Load(object sender, EventArgs e)
+        {
+
+        }
     }
 }

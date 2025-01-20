@@ -12,7 +12,7 @@ namespace Sea_Battle
             InitializeComponent();
         }
 
-        private void startButton_Click(object sender, EventArgs e)
+        private void StartButton_Click(object sender, EventArgs e)
         {
             //Устанавливаем размерность поля, которую написал пользователь
             int sizeH = (int)(sizeHeightNumeric.Value);

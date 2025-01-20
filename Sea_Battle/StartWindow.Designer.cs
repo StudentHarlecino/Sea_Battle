@@ -93,7 +93,7 @@
             startButton.TabIndex = 6;
             startButton.Text = "Начать";
             startButton.UseVisualStyleBackColor = false;
-            startButton.Click += startButton_Click;
+            startButton.Click += StartButton_Click;
             startButton.MouseLeave += startButton_MouseLeave;
             startButton.MouseMove += startButton_MouseMove;
             // 

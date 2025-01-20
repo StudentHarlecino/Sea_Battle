@@ -51,7 +51,7 @@ namespace Sea_Battle
             //10
             if (StartWindow.mapSizeHight == 10)
             {
-                this.Height = (StartWindow.mapSizeHight + 1) * cellSize + 100;
+                this.Height = (StartWindow.mapSizeHight + 1) * cellSize + 150;
             }
             if (StartWindow.mapSizeWidth == 10)
             {
@@ -62,7 +62,7 @@ namespace Sea_Battle
             //Добавляется три одноклеточных корабля
             if (StartWindow.mapSizeHight == 11)
             {
-                this.Height = (StartWindow.mapSizeHight + 1) * cellSize + 105;
+                this.Height = (StartWindow.mapSizeHight + 1) * cellSize + 155;
             }
             //Добавляется три одноклеточных корабля
             if (StartWindow.mapSizeWidth == 11)
@@ -75,7 +75,7 @@ namespace Sea_Battle
             //Добавляется два двухклеточных корабля
             if (StartWindow.mapSizeHight == 12)
             {
-                this.Height = (StartWindow.mapSizeHight + 1) * cellSize + 110;
+                this.Height = (StartWindow.mapSizeHight + 1) * cellSize + 160;
             }
             //Добавляется два двухклеточных корабля
             if (StartWindow.mapSizeWidth == 12)
@@ -88,7 +88,7 @@ namespace Sea_Battle
             //Добавляется два трехклеточных корабля
             if (StartWindow.mapSizeHight == 13)
             {
-                this.Height = (StartWindow.mapSizeHight + 1) * cellSize + 115;
+                this.Height = (StartWindow.mapSizeHight + 1) * cellSize + 165;
             }
             //Добавляется два трехклеточных корабля
             if (StartWindow.mapSizeWidth == 13)
@@ -101,7 +101,7 @@ namespace Sea_Battle
             //Добавляется два трехклеточных корабля и два одноклеточных корабля
             if (StartWindow.mapSizeHight == 14)
             {
-                this.Height = (StartWindow.mapSizeHight + 1) * cellSize + 120;
+                this.Height = (StartWindow.mapSizeHight + 1) * cellSize + 170;
             }
             //Добавляется два трехклеточных корабля и два одноклеточных корабля
             if (StartWindow.mapSizeWidth == 14)
@@ -114,7 +114,7 @@ namespace Sea_Battle
             //Добавляется два четырехклеточных корабля и 2 двухклеточных корабля
             if (StartWindow.mapSizeHight == 15)
             {
-                this.Height = (StartWindow.mapSizeHight + 1) * cellSize + 125;
+                this.Height = (StartWindow.mapSizeHight + 1) * cellSize + 175;
             }
             //Добавляется два четырехклеточных корабля и 2 двухклеточных корабля
             if (StartWindow.mapSizeWidth == 15)
@@ -167,7 +167,10 @@ namespace Sea_Battle
                     Button button = new Button();
                     button.Location = new Point(loc + j * cellSize + cellSize, i * cellSize + cellSize);
                     button.Size = new Size(cellSize, cellSize);
-                    
+
+                    //Делаем так, чтобы кнопки имели свойства при нажатии
+                    //button.Click += new EventHandler();
+
                     //Создание кнопок для кординат(Не кликабельных, для макета)
                     if (j == 0 || i == 0)
                     {
@@ -199,8 +202,26 @@ namespace Sea_Battle
             //Подпись карты противника  . Заметка: изменить autosize у label    
             Label map2 = new Label();
             map2.Text = "Карта противника";
-            map2.Location = new Point((StartWindow.mapSizeWidth * cellSize) / 2 - (map1.Width / 2) + 350, 10);
+            map2.AutoSize = true;
+            map2.Location = new Point((StartWindow.mapSizeWidth * cellSize) / 2 - (map1.Width / 2) + (400 + cellSize*(StartWindow.mapSizeWidth-10)), 10);
             this.Controls.Add(map2);
+
+            //Кнопка чтобы завершить расстановку и начать игру. Тут нам нужно сделать проверку, чтобы не было ошибок и пользователь начал игру со всеми доступными кораблями
+            Button startButton = new Button();
+            startButton.Size = new Size(130,40);
+            startButton.Text = "Начать";
+            startButton.Click += new EventHandler(StartButton_Click);
+            startButton.Location = new Point((this.ClientSize.Width-startButton.Width)/2,StartWindow.mapSizeHight * cellSize + 75 + 10);
+            this.Controls.Add(startButton);
+
+
+        }
+
+        private void StartButton_Click(object sender, EventArgs e)
+        {
+            SeaBattleGame seaBattleGameForm = new SeaBattleGame();
+            seaBattleGameForm.Show();
+
         }
 
         private void StowageShips_FormClosed(object sender, FormClosedEventArgs e)
