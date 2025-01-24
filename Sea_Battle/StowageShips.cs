@@ -1,16 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Reflection;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-
-namespace Sea_Battle
+﻿namespace Sea_Battle
 {
 
     public partial class StowageShips : Form
@@ -238,9 +226,12 @@ namespace Sea_Battle
 
         }
 
+
         private void StartButton_Click(object sender, EventArgs e)
         {
-            SeaBattleGame seaBattleGameForm = new SeaBattleGame();
+            SeaBattleGame seaBattleGameForm = new SeaBattleGame(myMap,cellSize,alphabet);
+            seaBattleGameForm.Width = this.Width;
+            seaBattleGameForm.Height = this.Height;
             seaBattleGameForm.Show();
 
         }
