@@ -68,7 +68,7 @@
                     Button button = new Button();
                     button.Location = new Point(350 + j * cellSize + cellSize, i * cellSize + cellSize);
                     button.Size = new Size(cellSize, cellSize);
-
+                    
 
                     //Создание кнопок для кординат(Не кликабельных, для макета)
                     if (j == 0 || i == 0)
@@ -99,8 +99,16 @@
             if (map[pressedButton.Location.Y / StowageShips.cellSize, pressedButton.Location.X / StowageShips.cellSize] == 0)
             {
                 hit = true;
+
+                pressedButton.BackgroundImage = Image.FromFile("Resources/BreakShips.png"); // Изображение попадания
+                pressedButton.BackgroundImageLayout = ImageLayout.Stretch;
             }
-            else hit = false;
+            else 
+            {
+                hit = false;
+                pressedButton.BackgroundImage = Image.FromFile("Resources/MissHit.png"); // Изображение промаха
+                pressedButton.BackgroundImageLayout = ImageLayout.Stretch;
+            }
 
             return hit;
         }
