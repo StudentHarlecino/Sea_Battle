@@ -38,6 +38,7 @@ namespace Sea_Battle
 
         public void CreateMap()
         {
+
             //Доп. переменная для размещения поля ИИ
             int loc = 350;
 
@@ -135,6 +136,8 @@ namespace Sea_Battle
                     Button button = new Button();
                     button.Location = new Point(j * cellSize + cellSize, i * cellSize + cellSize);
                     button.Size = new Size(cellSize, cellSize);
+                    button.Click += new EventHandler(ConfigurationShips);
+
                     //Создание кнопок для кординат
                     if (j == 0 || i == 0)
                     {
@@ -168,8 +171,6 @@ namespace Sea_Battle
                     button.Location = new Point(loc + j * cellSize + cellSize, i * cellSize + cellSize);
                     button.Size = new Size(cellSize, cellSize);
 
-                    //Делаем так, чтобы кнопки имели свойства при нажатии
-                    //button.Click += new EventHandler();
 
                     //Создание кнопок для кординат(Не кликабельных, для макета)
                     if (j == 0 || i == 0)
@@ -199,7 +200,7 @@ namespace Sea_Battle
             map1.Location = new Point((StartWindow.mapSizeWidth * cellSize) / 2 - (map1.Width / 2) +70, 10);
             this.Controls.Add(map1);
 
-            //Подпись карты противника  . Заметка: изменить autosize у label    
+            //Подпись карты противника 
             Label map2 = new Label();
             map2.Text = "Карта противника";
             map2.AutoSize = true;
@@ -214,6 +215,26 @@ namespace Sea_Battle
             startButton.Location = new Point((this.ClientSize.Width-startButton.Width)/2,StartWindow.mapSizeHight * cellSize + 75 + 10);
             this.Controls.Add(startButton);
 
+
+        }
+        public void ConfigurationShips(object sender, EventArgs e)
+        {
+            Button pressedButton = sender as Button;
+
+            // Индексы для местоположения кнопок
+            int rowIndex = (pressedButton.Location.Y - cellSize) / cellSize;
+            int colIndex = (pressedButton.Location.X - cellSize) / cellSize;
+
+            if (myMap[rowIndex,colIndex] == 0)
+            {
+                pressedButton.BackColor = Color.BlueViolet;
+                myMap[rowIndex, colIndex] = 1;
+            }
+            else
+            {
+                pressedButton.BackColor = SystemColors.ControlLight;
+                myMap[rowIndex, colIndex] = 0;
+            }
 
         }
 
