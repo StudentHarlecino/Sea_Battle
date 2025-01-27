@@ -3,6 +3,8 @@
 
     public partial class StowageShips : Form
     {
+        private Button[,] buttons; // Массив кнопок для игрового поля
+
         //Размер ячейки
         public static int cellSize = 30;
 
