@@ -22,7 +22,7 @@
         private void GenerateMap()
         {
             // Конфигурация карты игрока
-            for (int i = 0; i < StartWindow.mapSizeHight + 1; i++)
+            for (int i = 0; i < StartWindow.mapSizeHeight + 1; i++)
             {
                 for (int j = 0; j < StartWindow.mapSizeWidth + 1; j++)
                 {
@@ -51,7 +51,6 @@
                     }
                     else
                     {
-                        // Окраска кнопок в зависимости от состояния карты (здесь добавьте вашу логику)
                         button.BackColor = (playerMap[i, j] == 1) ? Color.BlueViolet : SystemColors.ControlLight;
                     }
                     this.Controls.Add(button);
@@ -60,7 +59,7 @@
             }
 
             // Конфигурация карты бота
-            for (int i = 0; i < StartWindow.mapSizeHight + 1; i++)
+            for (int i = 0; i < StartWindow.mapSizeHeight + 1; i++)
             {
                 for (int j = 0; j < StartWindow.mapSizeWidth + 1; j++)
                 {

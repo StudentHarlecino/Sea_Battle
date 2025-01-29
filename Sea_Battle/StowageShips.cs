@@ -3,17 +3,18 @@
 
     public partial class StowageShips : Form
     {
-        private Button[,] buttons; // Массив кнопок для игрового поля
-
         //Размер ячейки
         public static int cellSize = 30;
 
         //Массивы представляющие размерность поля Игрока и Бота. Прибавляем 1 к значениям, чтобы сделать поля с координатами
-        public static int[,] myMap = new int[StartWindow.mapSizeHight+1, StartWindow.mapSizeWidth+1];
-        public static int[,] enemyMap = new int[StartWindow.mapSizeHight+1, StartWindow.mapSizeWidth+1];
+        public static int[,] myMap = new int[StartWindow.mapSizeHeight+1, StartWindow.mapSizeWidth+1];
+        public static int[,] enemyMap = new int[StartWindow.mapSizeHeight+1, StartWindow.mapSizeWidth+1];
 
         //Алфавит для верхенего ряда
         public static string alphabet = "АБВГДЕЖЗИКИЙКЛМНО";
+        
+        //Хранение размера корабля
+        private int shipSize = 1; // Чтобы до использование numeric у нас было минимальное значение, то есть однопалубный корабль
 
         public StowageShips()
         {
@@ -32,17 +33,17 @@
             //Доп. переменная для размещения поля ИИ
             int loc = 350;
 
-            // Количество кораблей по умолчанию при размере 10 x 10
+            /*Количество кораблей по умолчанию при размере 10 x 10
             byte countShipOne = 4;
             byte countShipTwo = 3;
             byte countShipThree = 2;
-            byte countShipFour = 1;
+            byte countShipFour = 1;*/
 
             //Подстраиваем размерность окна под размеры заданные пользователем
             //10
-            if (StartWindow.mapSizeHight == 10)
+            if (StartWindow.mapSizeHeight == 10)
             {
-                this.Height = (StartWindow.mapSizeHight + 1) * cellSize + 150;
+                this.Height = (StartWindow.mapSizeHeight + 1) * cellSize + 150;
             }
             if (StartWindow.mapSizeWidth == 10)
             {
@@ -51,9 +52,9 @@
 
             //11
             //Добавляется три одноклеточных корабля
-            if (StartWindow.mapSizeHight == 11)
+            if (StartWindow.mapSizeHeight == 11)
             {
-                this.Height = (StartWindow.mapSizeHight + 1) * cellSize + 155;
+                this.Height = (StartWindow.mapSizeHeight + 1) * cellSize + 155;
             }
             //Добавляется три одноклеточных корабля
             if (StartWindow.mapSizeWidth == 11)
@@ -64,9 +65,9 @@
 
             //12
             //Добавляется два двухклеточных корабля
-            if (StartWindow.mapSizeHight == 12)
+            if (StartWindow.mapSizeHeight == 12)
             {
-                this.Height = (StartWindow.mapSizeHight + 1) * cellSize + 160;
+                this.Height = (StartWindow.mapSizeHeight + 1) * cellSize + 160;
             }
             //Добавляется два двухклеточных корабля
             if (StartWindow.mapSizeWidth == 12)
@@ -77,9 +78,9 @@
 
             //13
             //Добавляется два трехклеточных корабля
-            if (StartWindow.mapSizeHight == 13)
+            if (StartWindow.mapSizeHeight == 13)
             {
-                this.Height = (StartWindow.mapSizeHight + 1) * cellSize + 165;
+                this.Height = (StartWindow.mapSizeHeight + 1) * cellSize + 165;
             }
             //Добавляется два трехклеточных корабля
             if (StartWindow.mapSizeWidth == 13)
@@ -90,9 +91,9 @@
 
             //14
             //Добавляется два трехклеточных корабля и два одноклеточных корабля
-            if (StartWindow.mapSizeHight == 14)
+            if (StartWindow.mapSizeHeight == 14)
             {
-                this.Height = (StartWindow.mapSizeHight + 1) * cellSize + 170;
+                this.Height = (StartWindow.mapSizeHeight + 1) * cellSize + 170;
             }
             //Добавляется два трехклеточных корабля и два одноклеточных корабля
             if (StartWindow.mapSizeWidth == 14)
@@ -103,9 +104,9 @@
 
             //15
             //Добавляется два четырехклеточных корабля и 2 двухклеточных корабля
-            if (StartWindow.mapSizeHight == 15)
+            if (StartWindow.mapSizeHeight == 15)
             {
-                this.Height = (StartWindow.mapSizeHight + 1) * cellSize + 175;
+                this.Height = (StartWindow.mapSizeHeight + 1) * cellSize + 175;
             }
             //Добавляется два четырехклеточных корабля и 2 двухклеточных корабля
             if (StartWindow.mapSizeWidth == 15)
@@ -116,7 +117,7 @@
 
 
             // Конфигурация карты игрока
-            for (int i = 0; i < StartWindow.mapSizeHight+1; i++)
+            for (int i = 0; i < StartWindow.mapSizeHeight+1; i++)
             {
                 for (int j = 0; j < StartWindow.mapSizeWidth+1; j++)
                 {
@@ -150,7 +151,7 @@
             }
 
             // Конфигурация карты бота
-            for (int i = 0; i < StartWindow.mapSizeHight+1; i++)
+            for (int i = 0; i < StartWindow.mapSizeHeight+1; i++)
             {
                 for (int j = 0; j < StartWindow.mapSizeWidth+1; j++)
                 {
@@ -184,6 +185,8 @@
                     button.Enabled = false;
                 }
             }
+
+
             //Подпись карты игрока
             Label map1 = new Label();
             map1.Text = "Ваша карта";
@@ -202,11 +205,26 @@
             startButton.Size = new Size(130,40);
             startButton.Text = "Начать";
             startButton.Click += new EventHandler(StartButton_Click);
-            startButton.Location = new Point((this.ClientSize.Width-startButton.Width)/2,StartWindow.mapSizeHight * cellSize + 75 + 10);
+            startButton.Location = new Point((this.ClientSize.Width-startButton.Width)/2,StartWindow.mapSizeHeight * cellSize + 75 + 10);
             this.Controls.Add(startButton);
 
+            Label labelShipSize = new Label();
+            labelShipSize.Text = "Размер корабля:";
+            labelShipSize.Location = new Point(cellSize, StartWindow.mapSizeHeight * cellSize + 75); ; // Под полем игрока
+            this.Controls.Add(labelShipSize);
+
+            // Создание NumericUpDown для выбора размера корабля
+            NumericUpDown numericUpDownShipSize = new NumericUpDown();
+            numericUpDownShipSize.Minimum = 1;
+            numericUpDownShipSize.Maximum = 4;
+            numericUpDownShipSize.Value = 1; // Установка начального значения
+            numericUpDownShipSize.Location = new Point(cellSize, StartWindow.mapSizeHeight * cellSize + 98); // Ниже лейбла
+            numericUpDownShipSize.ValueChanged += (s, e) => { shipSize = (int)numericUpDownShipSize.Value; }; // Обновляем значение переменной в которой хранится размер корабля
+            this.Controls.Add(numericUpDownShipSize);
 
         }
+
+
         public void ConfigurationShips(object sender, EventArgs e)
         {
             Button pressedButton = sender as Button;
@@ -219,6 +237,7 @@
             {
                 pressedButton.BackColor = Color.BlueViolet;
                 myMap[rowIndex, colIndex] = 1;
+                MessageBox.Show("Текущий размер корабля: " + shipSize, "Информация", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             else
             {
@@ -235,7 +254,7 @@
             seaBattleGameForm.Width = this.Width;
             seaBattleGameForm.Height = this.Height;
             seaBattleGameForm.Show();
-
+            
         }
 
         private void StowageShips_FormClosed(object sender, FormClosedEventArgs e)

@@ -4,7 +4,7 @@ namespace Sea_Battle
     {
 
         //Создаем переменные для размерности поля
-        public static int mapSizeHight;
+        public static int mapSizeHeight;
         public static int mapSizeWidth;
 
         public StartWindow()
@@ -25,7 +25,7 @@ namespace Sea_Battle
             }
             else
             {
-                mapSizeHight = sizeH;
+                mapSizeHeight = sizeH;
             }
             if (sizeW > 15 || sizeW < 10)
             {
