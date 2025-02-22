@@ -7,12 +7,12 @@
         public static int cellSize = 30;
 
         //Массивы представляющие размерность поля Игрока и Бота. Прибавляем 1 к значениям, чтобы сделать поля с координатами
-        public static int[,] myMap = new int[StartWindow.mapSizeHeight+1, StartWindow.mapSizeWidth+1];
-        public static int[,] enemyMap = new int[StartWindow.mapSizeHeight+1, StartWindow.mapSizeWidth+1];
+        public static int[,] myMap = new int[StartWindow.mapSizeHeight + 1, StartWindow.mapSizeWidth + 1];
+        public static int[,] enemyMap = new int[StartWindow.mapSizeHeight + 1, StartWindow.mapSizeWidth + 1];
 
         //Алфавит для верхенего ряда
         public static string alphabet = "АБВГДЕЖЗИКИЙКЛМНО";
-        
+
         //Хранение размера корабля
         private int shipSize = 1; // Чтобы до использование numeric у нас было минимальное значение, то есть однопалубный корабль
 
@@ -117,9 +117,9 @@
 
 
             // Конфигурация карты игрока
-            for (int i = 0; i < StartWindow.mapSizeHeight+1; i++)
+            for (int i = 0; i < StartWindow.mapSizeHeight + 1; i++)
             {
-                for (int j = 0; j < StartWindow.mapSizeWidth+1; j++)
+                for (int j = 0; j < StartWindow.mapSizeWidth + 1; j++)
                 {
                     myMap[i, j] = 0;
 
@@ -139,9 +139,9 @@
 
                         if (i == 0 && j > 0)
                         {
-                            button.Text = alphabet[j-1].ToString();
+                            button.Text = alphabet[j - 1].ToString();
                         }
-                        if(j==0 && i>0)
+                        if (j == 0 && i > 0)
                         {
                             button.Text = i.ToString();
                         }
@@ -151,9 +151,9 @@
             }
 
             // Конфигурация карты бота
-            for (int i = 0; i < StartWindow.mapSizeHeight+1; i++)
+            for (int i = 0; i < StartWindow.mapSizeHeight + 1; i++)
             {
-                for (int j = 0; j < StartWindow.mapSizeWidth+1; j++)
+                for (int j = 0; j < StartWindow.mapSizeWidth + 1; j++)
                 {
                     myMap[i, j] = 0;
                     enemyMap[i, j] = 0;
@@ -168,7 +168,7 @@
                     {
                         button.BackColor = Color.Gray;
 
-                        
+
 
                         if (i == 0 && j > 0)
                         {
@@ -190,22 +190,22 @@
             //Подпись карты игрока
             Label map1 = new Label();
             map1.Text = "Ваша карта";
-            map1.Location = new Point((StartWindow.mapSizeWidth * cellSize) / 2 - (map1.Width / 2) +70, 10);
+            map1.Location = new Point((StartWindow.mapSizeWidth * cellSize) / 2 - (map1.Width / 2) + 70, 10);
             this.Controls.Add(map1);
 
             //Подпись карты противника 
             Label map2 = new Label();
             map2.Text = "Карта противника";
             map2.AutoSize = true;
-            map2.Location = new Point((StartWindow.mapSizeWidth * cellSize) / 2 - (map1.Width / 2) + (400 + cellSize*(StartWindow.mapSizeWidth-10)), 10);
+            map2.Location = new Point((StartWindow.mapSizeWidth * cellSize) / 2 - (map1.Width / 2) + (400 + cellSize * (StartWindow.mapSizeWidth - 10)), 10);
             this.Controls.Add(map2);
 
             //Кнопка чтобы завершить расстановку и начать игру. Тут нам нужно сделать проверку, чтобы не было ошибок и пользователь начал игру со всеми доступными кораблями
             Button startButton = new Button();
-            startButton.Size = new Size(130,40);
+            startButton.Size = new Size(130, 40);
             startButton.Text = "Начать";
             startButton.Click += new EventHandler(StartButton_Click);
-            startButton.Location = new Point((this.ClientSize.Width-startButton.Width)/2,StartWindow.mapSizeHeight * cellSize + 75 + 10);
+            startButton.Location = new Point((this.ClientSize.Width - startButton.Width) / 2, StartWindow.mapSizeHeight * cellSize + 75 + 10);
             this.Controls.Add(startButton);
 
             Label labelShipSize = new Label();
@@ -233,7 +233,7 @@
             int rowIndex = (pressedButton.Location.Y - cellSize) / cellSize;
             int colIndex = (pressedButton.Location.X - cellSize) / cellSize;
 
-            if (myMap[rowIndex,colIndex] == 0)
+            if (myMap[rowIndex, colIndex] == 0)
             {
                 pressedButton.BackColor = Color.BlueViolet;
                 myMap[rowIndex, colIndex] = 1;
@@ -250,16 +250,21 @@
 
         private void StartButton_Click(object sender, EventArgs e)
         {
-            SeaBattleGame seaBattleGameForm = new SeaBattleGame(myMap,cellSize,alphabet);
+            SeaBattleGame seaBattleGameForm = new SeaBattleGame(myMap, cellSize, alphabet);
             seaBattleGameForm.Width = this.Width;
             seaBattleGameForm.Height = this.Height;
             seaBattleGameForm.Show();
-            
+
         }
 
         private void StowageShips_FormClosed(object sender, FormClosedEventArgs e)
         {
             this.Close();
+        }
+
+        private void StowageShips_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }

@@ -41,10 +41,10 @@
             // 
             label1.AutoSize = true;
             label1.BackColor = Color.Transparent;
-            label1.Font = new Font("Microsoft Sans Serif", 60F);
-            label1.Location = new Point(282, 28);
+            label1.Font = new Font("Sitka Heading", 60F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            label1.Location = new Point(218, 9);
             label1.Name = "label1";
-            label1.Size = new Size(519, 91);
+            label1.Size = new Size(528, 116);
             label1.TabIndex = 2;
             label1.Text = "Морской бой";
             // 
@@ -52,11 +52,11 @@
             // 
             label2.AutoSize = true;
             label2.BackColor = Color.Transparent;
-            label2.Font = new Font("Microsoft Sans Serif", 30F);
+            label2.Font = new Font("Sitka Heading", 24F, FontStyle.Regular, GraphicsUnit.Point, 204);
             label2.ForeColor = Color.Black;
-            label2.Location = new Point(3, 0);
+            label2.Location = new Point(-1, 0);
             label2.Name = "label2";
-            label2.Size = new Size(453, 46);
+            label2.Size = new Size(339, 47);
             label2.TabIndex = 3;
             label2.Text = "Выберете размер поля";
             // 
