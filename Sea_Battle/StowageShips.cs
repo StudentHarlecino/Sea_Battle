@@ -6,6 +6,9 @@
         //Размер ячейки
         public static int cellSize = 30;
 
+        //Доп. переменная для размещения поля ИИ
+        public static int loc = 350;
+
         //Массивы представляющие размерность поля Игрока и Бота. Прибавляем 1 к значениям, чтобы сделать поля с координатами
         public static int[,] myMap = new int[StartWindow.mapSizeHeight + 1, StartWindow.mapSizeWidth + 1];
         public static int[,] enemyMap = new int[StartWindow.mapSizeHeight + 1, StartWindow.mapSizeWidth + 1];
@@ -24,14 +27,11 @@
 
         public void Init()
         {
-            CreateMap();
+            CreateMaps();
         }
 
-        public void CreateMap()
+        public void CreateMaps()
         {
-
-            //Доп. переменная для размещения поля ИИ
-            int loc = 350;
 
             /*Количество кораблей по умолчанию при размере 10 x 10
             byte countShipOne = 4;
@@ -146,6 +146,10 @@
                             button.Text = i.ToString();
                         }
                     }
+                    else
+                    {
+                        button.BackColor = SystemColors.ControlLight;
+                    }
                     this.Controls.Add(button);
                 }
             }
@@ -230,21 +234,25 @@
             Button pressedButton = sender as Button;
 
             // Индексы для местоположения кнопок
-            int rowIndex = (pressedButton.Location.Y - cellSize) / cellSize;
-            int colIndex = (pressedButton.Location.X - cellSize) / cellSize;
+            int rowIndex = ((pressedButton.Location.Y - cellSize) / cellSize) - 1; // Учитываем, что первый ряд и первый столбец - это координаты
+            int colIndex = ((pressedButton.Location.X - cellSize) / cellSize) - 1;
+
+            // Проверка на выход за пределы массива
+            if (rowIndex < 0 || rowIndex >= StartWindow.mapSizeHeight || colIndex < 0 || colIndex >= StartWindow.mapSizeWidth)
+            {
+                return; // Если индексы выходят за пределы, выходим из метода
+            }
 
             if (myMap[rowIndex, colIndex] == 0)
             {
                 pressedButton.BackColor = Color.BlueViolet;
                 myMap[rowIndex, colIndex] = 1;
-                MessageBox.Show("Текущий размер корабля: " + shipSize, "Информация", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             else
             {
                 pressedButton.BackColor = SystemColors.ControlLight;
                 myMap[rowIndex, colIndex] = 0;
             }
-
         }
 
 

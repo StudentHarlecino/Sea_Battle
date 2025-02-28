@@ -7,14 +7,21 @@
         private int cellSize;
         private string alphabet;
 
+        public static Button[,] playerButtons = new Button[StartWindow.mapSizeHeight + 1, StartWindow.mapSizeWidth + 1];
+        public static Button[,] botButtons = new Button[StartWindow.mapSizeHeight + 1, StartWindow.mapSizeWidth + 1];
+
+        public Bot bot;
+
         public SeaBattleGame(int[,] map, int cellSize, string alphabet)
         {
             InitializeComponent();
 
-            this.playerMap = map;
-            this.botMap = StowageShips.enemyMap;
+            playerMap = map;
+            botMap = StowageShips.enemyMap;
             this.cellSize = cellSize;
             this.alphabet = alphabet;
+
+            
 
             GenerateMap();
         }
@@ -48,10 +55,12 @@
                         {
                             button.Text = i.ToString();
                         }
+                        playerMap[i, j] = -1;
                     }
                     else
                     {
                         button.BackColor = (playerMap[i, j] == 1) ? Color.BlueViolet : SystemColors.ControlLight;
+                        playerButtons[i, j] = button;
                     }
                     this.Controls.Add(button);
                     button.Enabled = false;
@@ -65,16 +74,16 @@
                 {
 
                     Button button = new Button();
-                    button.Location = new Point(350 + j * cellSize + cellSize, i * cellSize + cellSize);
+                    button.Location = new Point(StowageShips.loc + j * cellSize + cellSize, i * cellSize + cellSize);
                     button.Size = new Size(cellSize, cellSize);
-                    
 
                     //Создание кнопок для кординат(Не кликабельных, для макета)
                     if (j == 0 || i == 0)
                     {
                         button.BackColor = Color.Gray;
 
-
+                        //Делаем кнопки для обозначения координат некликабельными
+                        button.Enabled = false;
 
                         if (i == 0 && j > 0)
                         {
@@ -85,36 +94,87 @@
                             button.Text = i.ToString();
                         }
                     }
+                    else
+                    {
+                        button.Click += new EventHandler(GameStatus);
+                        botButtons[i, j] = button;
+                    }
+
                     this.Controls.Add(button);
                 }
             }
         }
 
+        public void GameStatus(object sender, EventArgs e)
+        {
+            bot = new Bot(botMap, playerMap, botButtons, playerButtons);
+            Button pressedButton = sender as Button;
+            bool playerTurn = Shoot(botMap,pressedButton);
+            if (!playerTurn)
+            {
+                bot.BotShoot();
+            }
+            
+            /* if (CheckIfMapIsNotEmpty())
+                {
+                    this.Controls.Clear();
+                    InitializeComponent();
+                }*/
+        }
+
         public bool Shoot(int[,] map, Button pressedButton)
         {
-            int rowIndex = (pressedButton.Location.Y - StowageShips.cellSize) / StowageShips.cellSize;
-            int colIndex = (pressedButton.Location.X - StowageShips.cellSize) / StowageShips.cellSize;
+            // Получаем координаты нажатой кнопки
+            int buttonIndexX = (pressedButton.Location.X - (StowageShips.loc + StowageShips.cellSize)) / StowageShips.cellSize; // X-координата
+            int buttonIndexY = (pressedButton.Location.Y - cellSize) / cellSize; // Y-координата
+
             bool hit = false;
-            if (map[pressedButton.Location.Y / StowageShips.cellSize, pressedButton.Location.X / StowageShips.cellSize] == 0)
+
+            if (map[buttonIndexY, buttonIndexX] != 0)
             {
                 hit = true;
 
-                pressedButton.BackgroundImage = Image.FromFile("Resources/BreakShips.png"); // Изображение попадания
+                // Теперь при попадании наличие корабля в клетке убирается
+                map[buttonIndexY, buttonIndexX] = 0;
+
+                pressedButton.BackgroundImage = Image.FromFile("Resources/BreakShip.png"); // Изображение попадания
                 pressedButton.BackgroundImageLayout = ImageLayout.Stretch;
+                pressedButton.Enabled = false;
             }
-            else 
+            else
             {
                 hit = false;
                 pressedButton.BackgroundImage = Image.FromFile("Resources/MissHit.png"); // Изображение промаха
                 pressedButton.BackgroundImageLayout = ImageLayout.Stretch;
+                pressedButton.Enabled = false;
             }
-
             return hit;
         }
 
-        private void SeaBattleGame_Load(object sender, EventArgs e)
+        //Проверка наличия оставшихся кораблей
+        public bool CheckIfMapIsNotEmpty()
         {
-
+            bool isEmpty1 = true;
+            bool isEmpty2 = true;
+            for (int i = 0; i < StartWindow.mapSizeWidth + 1; i++)
+            {
+                for (int j = 0; j < StartWindow.mapSizeHeight + 1; j++)
+                {
+                    if (playerMap[i, j] != 0)
+                    {
+                        isEmpty1 = false;
+                    }
+                    if (botMap[i, j] != 0)
+                    {
+                        isEmpty2 = false;
+                    }
+                }
+            }
+            if (isEmpty1 || isEmpty2)
+            {
+                return false;
+            }
+            else return true;
         }
     }
 }

@@ -37,7 +37,6 @@
             ClientSize = new Size(800, 450);
             Name = "SeaBattleGame";
             Text = "SeaBattleGame";
-            Load += SeaBattleGame_Load;
             ResumeLayout(false);
         }
 
