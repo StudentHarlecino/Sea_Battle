@@ -28,6 +28,7 @@
 
         private void GenerateMap()
         {
+            bot = new Bot(botMap, playerMap, botButtons, playerButtons);
             // Конфигурация карты игрока
             for (int i = 0; i < StartWindow.mapSizeHeight + 1; i++)
             {
@@ -103,6 +104,8 @@
                     this.Controls.Add(button);
                 }
             }
+            bot.ConfigureShips();
+            botMap = bot.botMap;
         }
 
         public void GameStatus(object sender, EventArgs e)
@@ -150,6 +153,8 @@
             }
             return hit;
         }
+
+
 
         //Проверка наличия оставшихся кораблей
         public bool CheckIfMapIsNotEmpty()
