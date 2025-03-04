@@ -43,7 +43,7 @@
                     //Создание кнопок для кординат
                     if (j == 0 || i == 0)
                     {
-                        button.BackColor = Color.Gray;
+                        button.BackColor = Color.DimGray;
 
                         //Делаем кнопки для обозначения координат некликабельными
                         button.Enabled = false;
@@ -60,7 +60,7 @@
                     }
                     else
                     {
-                        button.BackColor = (playerMap[i, j] == 1) ? Color.BlueViolet : SystemColors.ControlLight;
+                        button.BackColor = (playerMap[i, j] == 1) ? Color.BlueViolet : SystemColors.ScrollBar;
                         playerButtons[i, j] = button;
                     }
                     this.Controls.Add(button);
@@ -81,7 +81,7 @@
                     //Создание кнопок для кординат(Не кликабельных, для макета)
                     if (j == 0 || i == 0)
                     {
-                        button.BackColor = Color.Gray;
+                        button.BackColor = Color.DimGray;
 
                         //Делаем кнопки для обозначения координат некликабельными
                         button.Enabled = false;
@@ -118,11 +118,21 @@
                 bot.BotShoot();
             }
 
-            /* if (CheckIfMapIsNotEmpty())
-                {
-                    this.Controls.Clear();
-                    InitializeComponent();
-                }*/
+            // Проверка на победу или поражение
+            if (CheckIfAllShipsDestroyed(botMap))
+            {
+                // Переход на форму победы
+                Victory winForm = new Victory();
+                winForm.Show();
+                this.Hide();
+            }
+            else if (CheckIfAllShipsDestroyed(playerMap))
+            {
+                // Переход на форму поражения
+                Defeat loseForm = new Defeat();
+                loseForm.Show();
+                this.Hide();
+            }
         }
 
         public bool Shoot(int[,] map, Button pressedButton)
@@ -141,6 +151,7 @@
                 map[buttonIndexY, buttonIndexX] = -2;
                 pressedButton.BackgroundImage = Image.FromFile("Resources/BreakShip.png");
                 pressedButton.BackgroundImageLayout = ImageLayout.Stretch;
+                pressedButton.BackColor = Color.Black;
                 pressedButton.Enabled = false;
 
                 // Проверяем, уничтожен ли корабль
@@ -151,7 +162,6 @@
                 {
                     foreach (var cell in shipCells)
                     {
-                        // Передаем флаг isBotMap = true, если это карта бота, иначе false
                         BlockAdjacentCells(map, cell.Item1, cell.Item2, true);
                     }
                 }
@@ -161,6 +171,7 @@
                 map[buttonIndexY, buttonIndexX] = -1; // Помечаем промах
                 pressedButton.BackgroundImage = Image.FromFile("Resources/MissHit.png");
                 pressedButton.BackgroundImageLayout = ImageLayout.Stretch;
+                pressedButton.BackColor = SystemColors.ControlDark;
                 pressedButton.Enabled = false;
             }
 
@@ -216,6 +227,7 @@
                             {
                                 button.BackgroundImage = Image.FromFile("Resources/MissHit.png");
                                 button.BackgroundImageLayout = ImageLayout.Stretch;
+                                button.BackColor = SystemColors.ControlDark;
                                 button.Enabled = false;
                             }
                         }
@@ -226,31 +238,21 @@
 
 
 
-        //Проверка наличия оставшихся кораблей
-        public bool CheckIfMapIsNotEmpty()
+        //Проверка на подбитие всех кораблей
+        private bool CheckIfAllShipsDestroyed(int[,] map)
         {
-            bool isEmpty1 = true;
-            bool isEmpty2 = true;
-            for (int i = 0; i < StartWindow.mapSizeWidth + 1; i++)
+            for (int i = 1; i < map.GetLength(0); i++)
             {
-                for (int j = 0; j < StartWindow.mapSizeHeight + 1; j++)
+                for (int j = 1; j < map.GetLength(1); j++)
                 {
-                    if (playerMap[i, j] != 0)
+                    if (map[i, j] == 1) // Если на карте остались неподбитые корабли
                     {
-                        isEmpty1 = false;
-                    }
-                    if (botMap[i, j] != 0)
-                    {
-                        isEmpty2 = false;
+                        return false;
                     }
                 }
             }
-            if (isEmpty1 || isEmpty2)
-            {
-                return false;
-            }
-            else return true;
+            return true; // Все корабли уничтожены
         }
-        
+
     }
 }

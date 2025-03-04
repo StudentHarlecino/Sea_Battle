@@ -210,7 +210,7 @@
             {
                 buttonIndexX = random.Next(1, StartWindow.mapSizeWidth + 1); // Генерация X-координаты
                 buttonIndexY = random.Next(1, StartWindow.mapSizeHeight + 1); // Генерация Y-координаты
-            } while (playerMap[buttonIndexY, buttonIndexX] == -1); // Проверяем, не стреляли ли мы уже в эту клетку
+            } while (playerMap[buttonIndexY, buttonIndexX] == -1 || playerMap[buttonIndexY, buttonIndexX] == -2); // Проверяем, не стреляли ли мы уже в эту клетку
 
             bool hit = false;
 
@@ -227,24 +227,34 @@
                 {
                     foreach (var cell in shipCells)
                     {
-                        // Блокируем клетки вокруг корабля игрока (isBotMap = false)
-                        SeaBattleGame.BlockAdjacentCells(playerMap, cell.Item1, cell.Item2, false);
+                        // Блокируем клетки вокруг корабля игрока
+                        BlockAdjacentCellsForPlayer(playerMap, cell.Item1, cell.Item2);
                     }
                 }
+
+                // Обновляем кнопку на поле игрока
+                playerButtons[buttonIndexY, buttonIndexX].BackgroundImage = Image.FromFile("Resources/BreakShip.png");
+                playerButtons[buttonIndexY, buttonIndexX].BackgroundImageLayout = ImageLayout.Stretch;
+                playerButtons[buttonIndexY, buttonIndexX].BackColor = Color.Black;
+                playerButtons[buttonIndexY, buttonIndexX].Enabled = false;
             }
             else
             {
                 hit = false;
-                playerMap[buttonIndexY, buttonIndexX] = -1;
-                playerButtons[buttonIndexY, buttonIndexX].BackgroundImage = Image.FromFile("Resources/MissHit.png"); // Изображение промаха
+                playerMap[buttonIndexY, buttonIndexX] = -1; // Помечаем как промах
+
+                // Обновляем кнопку на поле игрока
+                playerButtons[buttonIndexY, buttonIndexX].BackgroundImage = Image.FromFile("Resources/MissHit.png");
                 playerButtons[buttonIndexY, buttonIndexX].BackgroundImageLayout = ImageLayout.Stretch;
                 playerButtons[buttonIndexY, buttonIndexX].BackColor = Color.Gray;
-
+                playerButtons[buttonIndexY, buttonIndexX].Enabled = false;
             }
+
             if (hit)
             {
-                BotShoot();
+                BotShoot(); // Бот стреляет снова, если попал
             }
+
             return hit;
         }
 
@@ -264,11 +274,12 @@
 
                 if (y < 1 || y >= map.GetLength(0) || x < 1 || x >= map.GetLength(1)) continue;
                 if (visited.Contains(cell)) continue;
-                if (map[y, x] != originalValue && map[y, x] != -2) continue;
+                if (map[y, x] != originalValue && map[y, x] != -2) continue; // Учитываем подбитые клетки
 
                 visited.Add(cell);
                 shipCells.Add(cell);
 
+                // Поиск соседних клеток корабля
                 queue.Enqueue(Tuple.Create(y - 1, x));
                 queue.Enqueue(Tuple.Create(y + 1, x));
                 queue.Enqueue(Tuple.Create(y, x - 1));
@@ -278,5 +289,33 @@
             return shipCells;
         }
 
+        private void BlockAdjacentCellsForPlayer(int[,] map, int y, int x)
+        {
+            for (int i = y - 1; i <= y + 1; i++)
+            {
+                for (int j = x - 1; j <= x + 1; j++)
+                {
+                    // Проверяем границы карты
+                    if (i >= 1 && i < map.GetLength(0) && j >= 1 && j < map.GetLength(1))
+                    {
+                        // Блокируем только пустые клетки (0)
+                        if (map[i, j] == 0)
+                        {
+                            map[i, j] = -1; // Помечаем как промах
+
+                            // Обновляем кнопку на поле игрока
+                            Button button = playerButtons[i, j];
+                            if (button != null)
+                            {
+                                button.BackgroundImage = Image.FromFile("Resources/MissHit.png");
+                                button.BackgroundImageLayout = ImageLayout.Stretch;
+                                button.BackColor = Color.Gray;
+                                button.Enabled = false;
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 }
