@@ -19,11 +19,19 @@ namespace Sea_Battle
 
         private void playAgainButton_Click(object sender, EventArgs e)
         {
+            // Скрыть текущую форму
             this.Hide();
+
+            // Создать новое начальное окно
             StartWindow startForm = new StartWindow();
+
+            // Сбросить данные игры
+            startForm.ResetGame();
+
+            // Показать начальное окно
             startForm.Show();
-            Application.Restart();
         }
+
 
         private void playAgainButton_MouseMove(object sender, MouseEventArgs e)
         {
