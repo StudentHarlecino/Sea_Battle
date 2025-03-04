@@ -3,7 +3,7 @@ namespace Sea_Battle
     public partial class StartWindow : Form
     {
 
-        //Ñîçäàåì ïåðåìåííûå äëÿ ðàçìåðíîñòè ïîëÿ
+        //Ð¡Ð¾Ð·Ð´Ð°ÐµÐ¼ Ð¿ÐµÑ€ÐµÐ¼ÐµÐ½Ð½Ñ‹Ðµ Ð´Ð»Ñ Ñ€Ð°Ð·Ð¼ÐµÑ€Ð½Ð¾ÑÑ‚Ð¸ Ð¿Ð¾Ð»Ñ
         public static int mapSizeHeight;
         public static int mapSizeWidth;
 
@@ -14,14 +14,14 @@ namespace Sea_Battle
 
         private void StartButton_Click(object sender, EventArgs e)
         {
-            //Óñòàíàâëèâàåì ðàçìåðíîñòü ïîëÿ, êîòîðóþ íàïèñàë ïîëüçîâàòåëü
+            //Ð£ÑÑ‚Ð°Ð½Ð°Ð²Ð»Ð¸Ð²Ð°ÐµÐ¼ Ñ€Ð°Ð·Ð¼ÐµÑ€Ð½Ð¾ÑÑ‚ÑŒ Ð¿Ð¾Ð»Ñ, ÐºÐ¾Ñ‚Ð¾Ñ€ÑƒÑŽ Ð½Ð°Ð¿Ð¸ÑÐ°Ð» Ð¿Ð¾Ð»ÑŒÐ·Ð¾Ð²Ð°Ñ‚ÐµÐ»ÑŒ
             int sizeH = (int)(sizeHeightNumeric.Value);
             int sizeW = (int)(sizeWidthNumeric.Value);
 
-            //Ïðîâåðÿåì çíà÷åíèÿ ïîëüçîâàòåëÿ
+            //ÐŸÑ€Ð¾Ð²ÐµÑ€ÑÐµÐ¼ Ð·Ð½Ð°Ñ‡ÐµÐ½Ð¸Ñ Ð¿Ð¾Ð»ÑŒÐ·Ð¾Ð²Ð°Ñ‚ÐµÐ»Ñ
             if (sizeH > 15 || sizeH < 10)
             {
-                MessageBox.Show("Âû ââåëè íåäîïóñòèìóþ ðàçìåðíîñòü âûñîòû");
+                MessageBox.Show("Ð’Ñ‹ Ð²Ð²ÐµÐ»Ð¸ Ð½ÐµÐ´Ð¾Ð¿ÑƒÑÑ‚Ð¸Ð¼ÑƒÑŽ Ñ€Ð°Ð·Ð¼ÐµÑ€Ð½Ð¾ÑÑ‚ÑŒ Ð²Ñ‹ÑÐ¾Ñ‚Ñ‹");
             }
             else
             {
@@ -29,7 +29,7 @@ namespace Sea_Battle
             }
             if (sizeW > 15 || sizeW < 10)
             {
-                MessageBox.Show("Âû ââåëè íåäîïóñòèìóþ ðàçìåðíîñòü øèðèíû");
+                MessageBox.Show("Ð’Ñ‹ Ð²Ð²ÐµÐ»Ð¸ Ð½ÐµÐ´Ð¾Ð¿ÑƒÑÑ‚Ð¸Ð¼ÑƒÑŽ Ñ€Ð°Ð·Ð¼ÐµÑ€Ð½Ð¾ÑÑ‚ÑŒ ÑˆÐ¸Ñ€Ð¸Ð½Ñ‹");
             }
             else
             {
@@ -43,6 +43,17 @@ namespace Sea_Battle
             }
 
 
+        }
+
+        public void ResetGame()
+        {
+            // Ð¡Ð±Ñ€Ð¾ÑÐ¸Ñ‚ÑŒ Ñ€Ð°Ð·Ð¼ÐµÑ€Ñ‹ ÐºÐ°Ñ€Ñ‚Ñ‹
+            mapSizeHeight = 0;
+            mapSizeWidth = 0;
+
+            // ÐžÑ‡Ð¸ÑÑ‚Ð¸Ñ‚ÑŒ ÑÑ‚Ð°Ñ‚Ð¸Ñ‡ÐµÑÐºÐ¸Ðµ ÐºÐ½Ð¾Ð¿ÐºÐ¸
+            SeaBattleGame.playerButtons = new Button[StartWindow.mapSizeHeight + 1, StartWindow.mapSizeWidth + 1];
+            SeaBattleGame.botButtons = new Button[StartWindow.mapSizeHeight + 1, StartWindow.mapSizeWidth + 1];
         }
 
         private void StartWindow_Load(object sender, EventArgs e)
