@@ -499,18 +499,24 @@ namespace Sea_Battle
             this.Hide();
         }
 
-
-
-
-        private void StowageShips_Load(object sender, EventArgs e)
-        {
-
-        }
-
         private void StowageShips_FormClosed(object sender, FormClosedEventArgs e)
         {
             StartWindow startWindow = new StartWindow();
             startWindow.Show();
+        }
+
+        //Убираем возможность раскрывать окна двойным кликом по заголовку
+        protected override void WndProc(ref Message m)
+        {
+            const int WM_NCLBUTTONDBLCLK = 0x00A3; // Сообщение о двойном нажатии на заголовок
+
+            if (m.Msg == WM_NCLBUTTONDBLCLK)
+            {
+                // Игнорируем двойное нажатие на заголовок
+                return;
+            }
+
+            base.WndProc(ref m); // Продолжаем стандартную обработку других сообщений
         }
     }
 }

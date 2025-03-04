@@ -40,7 +40,6 @@
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Размещение кораблей";
             FormClosed += StowageShips_FormClosed;
-            Load += StowageShips_Load;
             ResumeLayout(false);
         }
 
