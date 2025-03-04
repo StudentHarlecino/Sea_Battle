@@ -39,8 +39,9 @@ namespace Sea_Battle
             {
                 StowageShips stowageForm = new StowageShips();
                 stowageForm.ShowDialog();
-                this.Close();
+                this.Hide();
             }
+
 
         }
 
@@ -58,5 +59,6 @@ namespace Sea_Battle
         {
             this.Cursor = Cursors.Arrow;
         }
+
     }
 }

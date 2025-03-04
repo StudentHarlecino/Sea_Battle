@@ -84,6 +84,7 @@
             Name = "Victory";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Вы выиграли!";
+            FormClosed += Victory_FormClosed;
             panel1.ResumeLayout(false);
             panel1.PerformLayout();
             ResumeLayout(false);

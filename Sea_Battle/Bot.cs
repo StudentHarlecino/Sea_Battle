@@ -179,26 +179,6 @@
             }
         }
 
-        //Вспомогательная фунция для конфигурации карты бота
-        public bool IsEmpty(int i, int j, int length)
-        {
-            bool isEmpty = true;
-
-            for (int k = j; k < j + length; k++)
-            {
-                if (botMap[i, j] != 0)
-                {
-                    isEmpty = false;
-                    break;
-                }
-            }
-
-            return isEmpty;
-        }
-
-        //Проверка наличия оставшихся кораблей
-
-
         //Стрельба бота
         public bool BotShoot()
         {

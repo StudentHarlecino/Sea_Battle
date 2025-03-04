@@ -37,6 +37,7 @@
             ClientSize = new Size(800, 450);
             Name = "SeaBattleGame";
             Text = "SeaBattleGame";
+            FormClosed += SeaBattleGame_FormClosed;
             ResumeLayout(false);
         }
 

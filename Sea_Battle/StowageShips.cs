@@ -33,12 +33,6 @@
         public void CreateMaps()
         {
 
-            /*Количество кораблей по умолчанию при размере 10 x 10
-            byte countShipOne = 4;
-            byte countShipTwo = 3;
-            byte countShipThree = 2;
-            byte countShipFour = 1;*/
-
             //Подстраиваем размерность окна под размеры заданные пользователем
             //10
             if (StartWindow.mapSizeHeight == 10)
@@ -234,8 +228,8 @@
             Button pressedButton = sender as Button;
 
             // Индексы для местоположения кнопок
-            int rowIndex = ((pressedButton.Location.Y ) / cellSize) - 1; // Учитываем, что первый ряд и первый столбец - это координаты
-            int colIndex = ((pressedButton.Location.X ) / cellSize) - 1;
+            int rowIndex = ((pressedButton.Location.Y) / cellSize) - 1; // Учитываем, что первый ряд и первый столбец - это координаты
+            int colIndex = ((pressedButton.Location.X) / cellSize) - 1;
 
             if (myMap[rowIndex, colIndex] == 0)
             {
@@ -247,7 +241,6 @@
                 pressedButton.BackColor = SystemColors.ControlLight;
                 myMap[rowIndex, colIndex] = 0;
             }
-            Console.WriteLine($"Кнопка нажата: row={rowIndex}, col={colIndex}, значение={myMap[rowIndex, colIndex]}");
         }
 
 
@@ -257,17 +250,20 @@
             seaBattleGameForm.Width = this.Width;
             seaBattleGameForm.Height = this.Height;
             seaBattleGameForm.Show();
+            this.Hide();
+
+        }
+
+
+
+        private void StowageShips_Load(object sender, EventArgs e)
+        {
 
         }
 
         private void StowageShips_FormClosed(object sender, FormClosedEventArgs e)
         {
-            this.Close();
-        }
-
-        private void StowageShips_Load(object sender, EventArgs e)
-        {
-
+            Application.Exit();
         }
     }
 }

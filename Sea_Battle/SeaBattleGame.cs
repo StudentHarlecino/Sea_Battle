@@ -15,6 +15,7 @@
         public SeaBattleGame(int[,] map, int cellSize, string alphabet)
         {
             InitializeComponent();
+            this.StartPosition = FormStartPosition.CenterScreen;
 
             playerMap = map;
             botMap = StowageShips.enemyMap;
@@ -106,6 +107,18 @@
             }
             bot.ConfigureShips();
             botMap = bot.botMap;
+
+            Label map1 = new Label();
+            map1.Text = "Ваша карта";
+            map1.Location = new Point((StartWindow.mapSizeWidth * cellSize) / 2 - (map1.Width / 2) + 70, 10);
+            this.Controls.Add(map1);
+
+            //Подпись карты противника 
+            Label map2 = new Label();
+            map2.Text = "Карта противника";
+            map2.AutoSize = true;
+            map2.Location = new Point((StartWindow.mapSizeWidth * cellSize) / 2 - (map1.Width / 2) + (400 + cellSize * (StartWindow.mapSizeWidth - 10)), 10);
+            this.Controls.Add(map2);
         }
 
         public void GameStatus(object sender, EventArgs e)
@@ -162,7 +175,7 @@
                 {
                     foreach (var cell in shipCells)
                     {
-                        BlockAdjacentCells(map, cell.Item1, cell.Item2, true);
+                        BlockAdjacentCells(map, cell.Item1, cell.Item2);
                     }
                 }
             }
@@ -209,7 +222,7 @@
             return shipCells;
         }
 
-        static public void BlockAdjacentCells(int[,] map, int y, int x, bool isBotMap)
+        static public void BlockAdjacentCells(int[,] map, int y, int x)
         {
             for (int i = y - 1; i <= y + 1; i++)
             {
@@ -222,7 +235,7 @@
                         if (map[i, j] == 0)
                         {
                             map[i, j] = -1; // Помечаем как промах
-                            Button button = isBotMap ? botButtons[i, j] : playerButtons[i, j];
+                            Button button = botButtons[i, j];
                             if (button != null && button.Enabled)
                             {
                                 button.BackgroundImage = Image.FromFile("Resources/MissHit.png");
@@ -254,5 +267,9 @@
             return true; // Все корабли уничтожены
         }
 
+        private void SeaBattleGame_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            Application.Exit();
+        }
     }
 }

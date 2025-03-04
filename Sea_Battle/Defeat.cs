@@ -22,6 +22,7 @@ namespace Sea_Battle
             this.Hide();
             StartWindow startForm = new StartWindow();
             startForm.Show();
+            Application.Restart();
         }
 
         private void playAgainButton_MouseMove(object sender, MouseEventArgs e)
@@ -32,6 +33,11 @@ namespace Sea_Battle
         private void playAgainButton_MouseLeave(object sender, EventArgs e)
         {
             this.Cursor = Cursors.Arrow;
+        }
+
+        private void Defeat_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            Application.Exit();
         }
     }
 }
