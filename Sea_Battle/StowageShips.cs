@@ -234,14 +234,8 @@
             Button pressedButton = sender as Button;
 
             // Индексы для местоположения кнопок
-            int rowIndex = ((pressedButton.Location.Y - cellSize) / cellSize) - 1; // Учитываем, что первый ряд и первый столбец - это координаты
-            int colIndex = ((pressedButton.Location.X - cellSize) / cellSize) - 1;
-
-            // Проверка на выход за пределы массива
-            if (rowIndex < 0 || rowIndex >= StartWindow.mapSizeHeight || colIndex < 0 || colIndex >= StartWindow.mapSizeWidth)
-            {
-                return; // Если индексы выходят за пределы, выходим из метода
-            }
+            int rowIndex = ((pressedButton.Location.Y ) / cellSize) - 1; // Учитываем, что первый ряд и первый столбец - это координаты
+            int colIndex = ((pressedButton.Location.X ) / cellSize) - 1;
 
             if (myMap[rowIndex, colIndex] == 0)
             {
@@ -253,6 +247,7 @@
                 pressedButton.BackColor = SystemColors.ControlLight;
                 myMap[rowIndex, colIndex] = 0;
             }
+            Console.WriteLine($"Кнопка нажата: row={rowIndex}, col={colIndex}, значение={myMap[rowIndex, colIndex]}");
         }
 
 

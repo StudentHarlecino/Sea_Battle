@@ -217,13 +217,20 @@
             if (playerMap[buttonIndexY, buttonIndexX] == 1)
             {
                 hit = true;
+                playerMap[buttonIndexY, buttonIndexX] = -2; // Подбитая клетка
 
-                // Убираем наличие корабля в клетке
-                playerMap[buttonIndexY, buttonIndexX] = -1;
+                // Проверяем, уничтожен ли корабль игрока
+                var shipCells = FindShipCells(playerMap, buttonIndexY, buttonIndexX, 1);
+                bool isShipDestroyed = shipCells.All(cell => playerMap[cell.Item1, cell.Item2] == -2);
 
-                playerButtons[buttonIndexY, buttonIndexX].BackgroundImage = Image.FromFile("Resources/BreakShip.png"); // Изображение попадания
-                playerButtons[buttonIndexY, buttonIndexX].BackgroundImageLayout = ImageLayout.Stretch;
-                playerButtons[buttonIndexY, buttonIndexX].BackColor = Color.Black;
+                if (isShipDestroyed)
+                {
+                    foreach (var cell in shipCells)
+                    {
+                        // Блокируем клетки вокруг корабля игрока (isBotMap = false)
+                        SeaBattleGame.BlockAdjacentCells(playerMap, cell.Item1, cell.Item2, false);
+                    }
+                }
             }
             else
             {
@@ -241,7 +248,35 @@
             return hit;
         }
 
+        private List<Tuple<int, int>> FindShipCells(int[,] map, int startY, int startX, int originalValue)
+        {
+            var shipCells = new List<Tuple<int, int>>();
+            var queue = new Queue<Tuple<int, int>>();
+            var visited = new HashSet<Tuple<int, int>>();
 
+            queue.Enqueue(Tuple.Create(startY, startX));
+
+            while (queue.Count > 0)
+            {
+                var cell = queue.Dequeue();
+                int y = cell.Item1;
+                int x = cell.Item2;
+
+                if (y < 1 || y >= map.GetLength(0) || x < 1 || x >= map.GetLength(1)) continue;
+                if (visited.Contains(cell)) continue;
+                if (map[y, x] != originalValue && map[y, x] != -2) continue;
+
+                visited.Add(cell);
+                shipCells.Add(cell);
+
+                queue.Enqueue(Tuple.Create(y - 1, x));
+                queue.Enqueue(Tuple.Create(y + 1, x));
+                queue.Enqueue(Tuple.Create(y, x - 1));
+                queue.Enqueue(Tuple.Create(y, x + 1));
+            }
+
+            return shipCells;
+        }
 
     }
 }

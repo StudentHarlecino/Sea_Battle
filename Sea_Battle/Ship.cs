@@ -8,9 +8,18 @@ namespace Sea_Battle
 {
     public class Ship
     {
-        public int StartX { get; set; }
-        public int StartY { get; set; }
-        public int Length { get; set; }
-        public bool IsHorizontal { get; set; }
+        public List<(int x, int y)> Positions { get; private set; }
+        public bool IsSunk { get; set; }
+
+        public Ship(List<(int x, int y)> positions)
+        {
+            Positions = positions;
+            IsSunk = false;
+        }
+
+        public void CheckIfSunk(int[,] playerMap)
+        {
+            IsSunk = Positions.All(pos => playerMap[pos.y, pos.x] == -1);
+        }
     }
 }

@@ -21,7 +21,7 @@
             this.cellSize = cellSize;
             this.alphabet = alphabet;
 
-            
+
 
             GenerateMap();
         }
@@ -38,7 +38,7 @@
                     Button button = new Button();
                     button.Location = new Point(j * cellSize + cellSize, i * cellSize + cellSize);
                     button.Size = new Size(cellSize, cellSize);
-                    
+
 
                     //Создание кнопок для кординат
                     if (j == 0 || i == 0)
@@ -112,12 +112,12 @@
         {
             bot = new Bot(botMap, playerMap, botButtons, playerButtons);
             Button pressedButton = sender as Button;
-            bool playerTurn = Shoot(botMap,pressedButton);
+            bool playerTurn = Shoot(botMap, pressedButton);
             if (!playerTurn)
             {
                 bot.BotShoot();
             }
-            
+
             /* if (CheckIfMapIsNotEmpty())
                 {
                     this.Controls.Clear();
@@ -127,31 +127,101 @@
 
         public bool Shoot(int[,] map, Button pressedButton)
         {
-            // Получаем координаты нажатой кнопки
-            int buttonIndexX = (pressedButton.Location.X - (StowageShips.loc + StowageShips.cellSize)) / StowageShips.cellSize; // X-координата
-            int buttonIndexY = (pressedButton.Location.Y - cellSize) / cellSize; // Y-координата
+            int buttonIndexX = (pressedButton.Location.X - (StowageShips.loc + StowageShips.cellSize)) / StowageShips.cellSize;
+            int buttonIndexY = (pressedButton.Location.Y - cellSize) / cellSize;
 
             bool hit = false;
 
-            if (map[buttonIndexY, buttonIndexX] != 0)
+            if (map[buttonIndexY, buttonIndexX] > 0) // Проверяем, является ли клетка частью корабля
             {
                 hit = true;
+                int originalValue = map[buttonIndexY, buttonIndexX];
 
-                // Теперь при попадании наличие корабля в клетке убирается
-                map[buttonIndexY, buttonIndexX] = 0;
-
-                pressedButton.BackgroundImage = Image.FromFile("Resources/BreakShip.png"); // Изображение попадания
+                // Помечаем клетку как подбитую (-2)
+                map[buttonIndexY, buttonIndexX] = -2;
+                pressedButton.BackgroundImage = Image.FromFile("Resources/BreakShip.png");
                 pressedButton.BackgroundImageLayout = ImageLayout.Stretch;
                 pressedButton.Enabled = false;
+
+                // Проверяем, уничтожен ли корабль
+                List<Tuple<int, int>> shipCells = FindShipCells(map, buttonIndexY, buttonIndexX, originalValue);
+                bool isShipDestroyed = shipCells.All(cell => map[cell.Item1, cell.Item2] == -2);
+
+                if (isShipDestroyed)
+                {
+                    foreach (var cell in shipCells)
+                    {
+                        // Передаем флаг isBotMap = true, если это карта бота, иначе false
+                        BlockAdjacentCells(map, cell.Item1, cell.Item2, true);
+                    }
+                }
             }
-            else
+            else if (map[buttonIndexY, buttonIndexX] == 0)
             {
-                hit = false;
-                pressedButton.BackgroundImage = Image.FromFile("Resources/MissHit.png"); // Изображение промаха
+                map[buttonIndexY, buttonIndexX] = -1; // Помечаем промах
+                pressedButton.BackgroundImage = Image.FromFile("Resources/MissHit.png");
                 pressedButton.BackgroundImageLayout = ImageLayout.Stretch;
                 pressedButton.Enabled = false;
             }
+
             return hit;
+        }
+
+        private List<Tuple<int, int>> FindShipCells(int[,] map, int startY, int startX, int originalValue)
+        {
+            var shipCells = new List<Tuple<int, int>>();
+            var queue = new Queue<Tuple<int, int>>();
+            var visited = new HashSet<Tuple<int, int>>();
+
+            queue.Enqueue(Tuple.Create(startY, startX));
+
+            while (queue.Count > 0)
+            {
+                var cell = queue.Dequeue();
+                int y = cell.Item1;
+                int x = cell.Item2;
+
+                if (y < 1 || y >= map.GetLength(0) || x < 1 || x >= map.GetLength(1)) continue;
+                if (visited.Contains(cell)) continue;
+                if (map[y, x] != originalValue && map[y, x] != -2) continue; // Учитываем подбитые клетки
+
+                visited.Add(cell);
+                shipCells.Add(cell);
+
+                // Поиск соседних клеток корабля
+                queue.Enqueue(Tuple.Create(y - 1, x));
+                queue.Enqueue(Tuple.Create(y + 1, x));
+                queue.Enqueue(Tuple.Create(y, x - 1));
+                queue.Enqueue(Tuple.Create(y, x + 1));
+            }
+
+            return shipCells;
+        }
+
+        static public void BlockAdjacentCells(int[,] map, int y, int x, bool isBotMap)
+        {
+            for (int i = y - 1; i <= y + 1; i++)
+            {
+                for (int j = x - 1; j <= x + 1; j++)
+                {
+                    // Проверяем границы карты
+                    if (i >= 1 && i < map.GetLength(0) && j >= 1 && j < map.GetLength(1))
+                    {
+                        // Блокируем только пустые клетки (0)
+                        if (map[i, j] == 0)
+                        {
+                            map[i, j] = -1; // Помечаем как промах
+                            Button button = isBotMap ? botButtons[i, j] : playerButtons[i, j];
+                            if (button != null && button.Enabled)
+                            {
+                                button.BackgroundImage = Image.FromFile("Resources/MissHit.png");
+                                button.BackgroundImageLayout = ImageLayout.Stretch;
+                                button.Enabled = false;
+                            }
+                        }
+                    }
+                }
+            }
         }
 
 
@@ -181,5 +251,6 @@
             }
             else return true;
         }
+        
     }
 }
