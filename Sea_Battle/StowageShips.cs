@@ -1,8 +1,9 @@
-﻿namespace Sea_Battle
+namespace Sea_Battle
 {
 
     public partial class StowageShips : Form
     {
+
         //Размер ячейки
         public static int cellSize = 30;
 
@@ -10,8 +11,8 @@
         public static int loc = 350;
 
         //Массивы представляющие размерность поля Игрока и Бота. Прибавляем 1 к значениям, чтобы сделать поля с координатами
-        public static int[,] myMap = new int[StartWindow.mapSizeHeight + 1, StartWindow.mapSizeWidth + 1];
-        public static int[,] enemyMap = new int[StartWindow.mapSizeHeight + 1, StartWindow.mapSizeWidth + 1];
+        private int[,] myMap;
+        private int[,] enemyMap;
 
         //Алфавит для верхенего ряда
         public static string alphabet = "АБВГДЕЖЗИКИЙКЛМНО";
@@ -27,8 +28,13 @@
 
         public void Init()
         {
+            // Пересоздаем массивы с новыми размерами
+            myMap = new int[StartWindow.mapSizeHeight + 1, StartWindow.mapSizeWidth + 1];
+            enemyMap = new int[StartWindow.mapSizeHeight + 1, StartWindow.mapSizeWidth + 1];
+
             CreateMaps();
         }
+
 
         public void CreateMaps()
         {
@@ -246,7 +252,7 @@
 
         private void StartButton_Click(object sender, EventArgs e)
         {
-            SeaBattleGame seaBattleGameForm = new SeaBattleGame(myMap, cellSize, alphabet);
+            SeaBattleGame seaBattleGameForm = new SeaBattleGame(myMap,enemyMap, cellSize, alphabet);
             seaBattleGameForm.Width = this.Width;
             seaBattleGameForm.Height = this.Height;
             seaBattleGameForm.Show();
