@@ -49,11 +49,11 @@
             // 
             label1.AutoSize = true;
             label1.BackColor = Color.Transparent;
-            label1.Font = new Font("Edirne Normal", 60F);
+            label1.Font = new Font("Sitka Heading", 60F, FontStyle.Bold);
             label1.ForeColor = Color.WhiteSmoke;
-            label1.Location = new Point(427, 60);
+            label1.Location = new Point(250, 53);
             label1.Name = "label1";
-            label1.Size = new Size(346, 96);
+            label1.Size = new Size(547, 116);
             label1.TabIndex = 1;
             label1.Text = "ПОРАЖЕНИЕ";
             label1.TextAlign = ContentAlignment.MiddleCenter;
@@ -64,7 +64,7 @@
             playAgainButton.FlatAppearance.MouseOverBackColor = Color.Maroon;
             playAgainButton.FlatStyle = FlatStyle.Flat;
             playAgainButton.Font = new Font("Arial Black", 15F);
-            playAgainButton.Location = new Point(507, 202);
+            playAgainButton.Location = new Point(424, 193);
             playAgainButton.Name = "playAgainButton";
             playAgainButton.Size = new Size(187, 54);
             playAgainButton.TabIndex = 0;

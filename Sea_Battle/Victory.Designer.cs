@@ -66,11 +66,11 @@
             // 
             label1.AutoSize = true;
             label1.BackColor = Color.Transparent;
-            label1.Font = new Font("Edirne Normal", 60F);
+            label1.Font = new Font("Sitka Heading", 60F, FontStyle.Bold);
             label1.ForeColor = Color.Black;
-            label1.Location = new Point(428, 60);
+            label1.Location = new Point(367, 57);
             label1.Name = "label1";
-            label1.Size = new Size(242, 96);
+            label1.Size = new Size(364, 116);
             label1.TabIndex = 0;
             label1.Text = "ПОБЕДА";
             // 
