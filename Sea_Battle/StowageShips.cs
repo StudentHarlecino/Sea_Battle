@@ -267,9 +267,10 @@ namespace Sea_Battle
 
         }
 
-        private void StowageShips_FormClosed(object sender, FormClosedEventArgs e)
-        {
-            Application.Exit();
-        }
+         private void StowageShips_FormClosed(object sender, FormClosedEventArgs e)
+         {
+             StartWindow startWindow = new StartWindow();
+             startWindow.Show();
+         }
     }
 }
