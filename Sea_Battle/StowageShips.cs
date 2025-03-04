@@ -19,7 +19,7 @@ namespace Sea_Battle
 
         //Хранение размера корабля
         private int shipSize = 1; // Чтобы до использование numeric у нас было минимальное значение, то есть однопалубный корабль
-
+        private bool checkedHorizontal;
         public StowageShips()
         {
             InitializeComponent();
@@ -209,12 +209,13 @@ namespace Sea_Battle
             startButton.Size = new Size(130, 40);
             startButton.Text = "Начать";
             startButton.Click += new EventHandler(StartButton_Click);
-            startButton.Location = new Point((this.ClientSize.Width - startButton.Width) / 2, StartWindow.mapSizeHeight * cellSize + 75 + 10);
+            startButton.Location = new Point(this.ClientSize.Width - startButton.Width-100, StartWindow.mapSizeHeight * cellSize + 75 + 10);
             this.Controls.Add(startButton);
 
             Label labelShipSize = new Label();
             labelShipSize.Text = "Размер корабля:";
-            labelShipSize.Location = new Point(cellSize, StartWindow.mapSizeHeight * cellSize + 75); ; // Под полем игрока
+            labelShipSize.Location = new Point(cellSize, StartWindow.mapSizeHeight * cellSize + 65); ; // Под полем игрока
+            labelShipSize.BackColor = Color.Transparent;
             this.Controls.Add(labelShipSize);
 
             // Создание NumericUpDown для выбора размера корабля
@@ -222,11 +223,52 @@ namespace Sea_Battle
             numericUpDownShipSize.Minimum = 1;
             numericUpDownShipSize.Maximum = 4;
             numericUpDownShipSize.Value = 1; // Установка начального значения
-            numericUpDownShipSize.Location = new Point(cellSize, StartWindow.mapSizeHeight * cellSize + 98); // Ниже лейбла
+            numericUpDownShipSize.Location = new Point(cellSize, StartWindow.mapSizeHeight * cellSize + 88); // Ниже лейбла
             numericUpDownShipSize.ValueChanged += (s, e) => { shipSize = (int)numericUpDownShipSize.Value; }; // Обновляем значение переменной в которой хранится размер корабля
             this.Controls.Add(numericUpDownShipSize);
 
+            // Создание чекбоксов чтобы пользователь мог выбирать какой сторон располагать корабль
+            CheckBox horizontalCheckBox = new CheckBox();
+            CheckBox verticalCheckBox = new CheckBox();
+
+            horizontalCheckBox.Text = "Горизонтальное";
+            horizontalCheckBox.Location = new Point(cellSize, StartWindow.mapSizeHeight * cellSize + 116);
+            horizontalCheckBox.Checked = true;
+            horizontalCheckBox.AutoSize = true;
+            checkedHorizontal = true;
+            horizontalCheckBox.CheckedChanged += (s, e) =>
+            {
+                if (horizontalCheckBox.Checked)
+                {
+                    verticalCheckBox.Checked = false;
+                    checkedHorizontal = true;
+                }
+            };
+            this.Controls.Add(horizontalCheckBox);
+
+
+            verticalCheckBox.Text = "Вертикальное";
+            verticalCheckBox.Location = new Point(cellSize + 125, StartWindow.mapSizeHeight * cellSize + 113);
+            horizontalCheckBox.AutoSize = true;
+            verticalCheckBox.CheckedChanged += (s, e) =>
+            {
+                if (verticalCheckBox.Checked)
+                {
+                    horizontalCheckBox.Checked = false;
+                    checkedHorizontal = false;
+                }
+            };
+            this.Controls.Add(verticalCheckBox);
+
+            // кнопка очистки поля от кораблей
+            Button clearButton = new Button();
+            clearButton.Size = new Size(100, 27);
+            clearButton.Text = "Очистить поле";
+            clearButton.Click += new EventHandler(ClearButton_Click); // Обработчик события
+            clearButton.Location = new Point((this.ClientSize.Width - clearButton.Width) / 3 + 50 , StartWindow.mapSizeHeight * cellSize + 70);
+            this.Controls.Add(clearButton);
         }
+
 
 
         public void ConfigurationShips(object sender, EventArgs e)
@@ -237,18 +279,105 @@ namespace Sea_Battle
             int rowIndex = ((pressedButton.Location.Y) / cellSize) - 1; // Учитываем, что первый ряд и первый столбец - это координаты
             int colIndex = ((pressedButton.Location.X) / cellSize) - 1;
 
-            if (myMap[rowIndex, colIndex] == 0)
+            // Проверяем, можно ли разместить корабль
+            if (CanPlaceShip(rowIndex, colIndex, shipSize, checkedHorizontal))
             {
+                // Размещаем корабль
+                PlaceShipOnMap(rowIndex, colIndex, shipSize, checkedHorizontal);
                 pressedButton.BackColor = Color.BlueViolet;
                 myMap[rowIndex, colIndex] = 1;
             }
             else
             {
-                pressedButton.BackColor = SystemColors.ControlLight;
-                myMap[rowIndex, colIndex] = 0;
+                // Если корабль нельзя разместить, выводим сообщение об ошибке
+                MessageBox.Show("Невозможно разместить корабль в этом месте.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+        //-------------------------------------------------------------
+        private bool CanPlaceShip(int startRow, int startCol, int length, bool horizontal)
+        {
+            for (int i = 0; i < length; i++)
+            {
+                int checkRow = horizontal ? startRow : startRow + i;
+                int checkCol = horizontal ? startCol + i : startCol;
+
+                // Проверяем границы карты
+                if (checkRow < 1 || checkRow >= myMap.GetLength(0) || checkCol < 1 || checkCol >= myMap.GetLength(1))
+                {
+                    return false; // Корабль выходит за границы карты
+                }
+
+                // Проверяем, занята ли клетка
+                if (myMap[checkRow, checkCol] != 0)
+                {
+                    return false; // Клетка уже занята
+                }
+
+                // Проверяем соседние клетки
+                for (int dy = -1; dy <= 1; dy++)
+                {
+                    for (int dx = -1; dx <= 1; dx++)
+                    {
+                        int neighborRow = checkRow + dy;
+                        int neighborCol = checkCol + dx;
+
+                        if (neighborRow >= 1 && neighborRow < myMap.GetLength(0) && neighborCol >= 1 && neighborCol < myMap.GetLength(1))
+                        {
+                            if (myMap[neighborRow, neighborCol] != 0)
+                            {
+                                return false; // Рядом с кораблем уже есть другой корабль
+                            }
+                        }
+                    }
+                }
+            }
+            return true; // Корабль можно разместить
+        }
+
+        private void PlaceShipOnMap(int startRow, int startCol, int length, bool horizontal)
+        {
+            for (int i = 0; i < length; i++)
+            {
+                int row = horizontal ? startRow : startRow + i;
+                int col = horizontal ? startCol + i : startCol;
+
+                myMap[row, col] = 1; // Указываем, что клетка занята кораблем
+
+                // Обновляем цвет кнопки
+                Button button = this.Controls.OfType<Button>().FirstOrDefault(b => b.Location == new Point((col + 1) * cellSize, (row + 1) * cellSize));
+                if (button != null)
+                {
+                    button.BackColor = Color.BlueViolet;
+                }
             }
         }
 
+        private void ClearButton_Click(object sender, EventArgs e)
+        {
+            // Очищаем карту игрока
+            for (int i = 1; i < myMap.GetLength(0); i++)
+            {
+                for (int j = 1; j < myMap.GetLength(1); j++)
+                {
+                    myMap[i, j] = 0; // Сбрасываем значение клетки на 0 (пустая клетка)
+                }
+            }
+
+            // Обновляем визуальное отображение кнопок
+            for (int i = 1; i < StartWindow.mapSizeHeight + 1; i++)
+            {
+                for (int j = 1; j < StartWindow.mapSizeWidth + 1; j++)
+                {
+                    Button button = this.Controls.OfType<Button>().FirstOrDefault(b => b.Location == new Point(j * cellSize + cellSize, i * cellSize + cellSize));
+                    if (button != null)
+                    {
+                        button.BackColor = SystemColors.ControlLight; // Возвращаем стандартный цвет кнопки
+                    }
+                }
+            }
+
+            MessageBox.Show("Поле очищено от кораблей.", "Очистка поля", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
 
         private void StartButton_Click(object sender, EventArgs e)
         {
@@ -257,7 +386,6 @@ namespace Sea_Battle
             seaBattleGameForm.Height = this.Height;
             seaBattleGameForm.Show();
             this.Hide();
-
         }
 
 
@@ -267,10 +395,10 @@ namespace Sea_Battle
 
         }
 
-         private void StowageShips_FormClosed(object sender, FormClosedEventArgs e)
-         {
-             StartWindow startWindow = new StartWindow();
-             startWindow.Show();
-         }
+        private void StowageShips_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            StartWindow startWindow = new StartWindow();
+            startWindow.Show();
+        }
     }
 }
