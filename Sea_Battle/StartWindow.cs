@@ -71,5 +71,9 @@ namespace Sea_Battle
             this.Cursor = Cursors.Arrow;
         }
 
+        private void StartWindow_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            Application.Exit();
+        }
     }
 }

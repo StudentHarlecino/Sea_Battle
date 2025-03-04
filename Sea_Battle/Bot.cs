@@ -23,10 +23,6 @@
             PlaceShip(2, 3); // 2 корабля по 3 клетки
             PlaceShip(3, 2); // 3 корабля по 2 клетки
             PlaceShip(4, 1); // 4 корабля по 1 клетке
-            if (StartWindow.mapSizeHeight == 10 && StartWindow.mapSizeWidth == 10)
-            {
-                PlaceShip(3, 1);
-            }
 
             //11
             //Добавляется три одноклеточных корабля
@@ -68,13 +64,13 @@
             //Добавляется два трехклеточных корабля и два одноклеточных корабля
             if (StartWindow.mapSizeHeight == 14)
             {
-                PlaceShip(2, 1);
+                PlaceShip(2, 3);
                 PlaceShip(1, 4);
             }
             //Добавляется два трехклеточных корабля и два одноклеточных корабля
             if (StartWindow.mapSizeWidth == 14)
             {
-                PlaceShip(2, 1);
+                PlaceShip(2, 3);
                 PlaceShip(1, 4);
             }
 

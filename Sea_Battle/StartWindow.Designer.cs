@@ -163,6 +163,7 @@
             Name = "StartWindow";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Морской бой";
+            FormClosed += StartWindow_FormClosed;
             Load += StartWindow_Load;
             panel1.ResumeLayout(false);
             panel1.PerformLayout();

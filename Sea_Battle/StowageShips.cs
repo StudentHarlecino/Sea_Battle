@@ -8,7 +8,7 @@ namespace Sea_Battle
         public static int cellSize = 30;
 
         //Доп. переменная для размещения поля ИИ
-        public static int loc = 350;
+        public static int loc;
 
         //Массивы представляющие размерность поля Игрока и Бота. Прибавляем 1 к значениям, чтобы сделать поля с координатами
         private int[,] myMap;
@@ -31,7 +31,7 @@ namespace Sea_Battle
             // Пересоздаем массивы с новыми размерами
             myMap = new int[StartWindow.mapSizeHeight + 1, StartWindow.mapSizeWidth + 1];
             enemyMap = new int[StartWindow.mapSizeHeight + 1, StartWindow.mapSizeWidth + 1];
-
+            loc = 350;
             CreateMaps();
         }
 
@@ -276,24 +276,113 @@ namespace Sea_Battle
             Button pressedButton = sender as Button;
 
             // Индексы для местоположения кнопок
-            int rowIndex = ((pressedButton.Location.Y) / cellSize) - 1; // Учитываем, что первый ряд и первый столбец - это координаты
+            int rowIndex = ((pressedButton.Location.Y) / cellSize) - 1;
             int colIndex = ((pressedButton.Location.X) / cellSize) - 1;
 
-            // Проверяем, можно ли разместить корабль
+            // Получаем текущие ограничения на количество кораблей
+            var shipCounts = GetShipCounts();
+
+            // Проверяем, можно ли разместить корабль данного размера
+            if (placedShips[shipSize] >= shipCounts[shipSize])
+            {
+                MessageBox.Show($"Вы уже разместили максимальное количество кораблей размером {shipSize}.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            // Проверяем, можно ли разместить корабль на карте
             if (CanPlaceShip(rowIndex, colIndex, shipSize, checkedHorizontal))
             {
                 // Размещаем корабль
                 PlaceShipOnMap(rowIndex, colIndex, shipSize, checkedHorizontal);
                 pressedButton.BackColor = Color.BlueViolet;
                 myMap[rowIndex, colIndex] = 1;
+
+                // Увеличиваем счетчик размещенных кораблей
+                placedShips[shipSize]++;
             }
             else
             {
-                // Если корабль нельзя разместить, выводим сообщение об ошибке
                 MessageBox.Show("Невозможно разместить корабль в этом месте.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
         //-------------------------------------------------------------
+
+        private Dictionary<int, int> GetShipCounts()
+        {
+            var shipCounts = new Dictionary<int, int>
+            {
+                { 1, 4 }, // 4 однопалубных корабля
+                { 2, 3 }, // 3 двухпалубных корабля
+                { 3, 2 }, // 2 трехпалубных корабля
+                { 4, 1 }  // 1 четырехпалубный корабль
+            };
+
+            // Дополнительные корабли для больших карт
+            if (StartWindow.mapSizeHeight == 11)
+            {
+                shipCounts[1] += 3; // Добавляем 3 однопалубных корабля
+            }
+
+            if (StartWindow.mapSizeWidth == 11)
+            {
+                shipCounts[1] += 3; // Добавляем 3 однопалубных корабля
+            }
+
+            if (StartWindow.mapSizeHeight == 12)
+            {
+                shipCounts[2] += 2; // Добавляем 2 двухпалубных корабля
+            }
+
+            if (StartWindow.mapSizeWidth == 12)
+            {
+                shipCounts[2] += 2; // Добавляем 2 двухпалубных корабля
+            }
+
+            if (StartWindow.mapSizeHeight == 13)
+            {
+                shipCounts[3] += 2; // Добавляем 2 трехпалубных корабля
+            }
+
+            if (StartWindow.mapSizeWidth == 13)
+            {
+                shipCounts[3] += 2; // Добавляем 2 трехпалубных корабля
+            }
+
+            if (StartWindow.mapSizeHeight == 14)
+            {
+                shipCounts[3] += 2; // Добавляем 2 трехпалубных корабля
+                shipCounts[4] += 1; // Добавляем 1 четырехпалубный корабль
+            }
+
+            if (StartWindow.mapSizeWidth == 14)
+            {
+                shipCounts[3] += 2; // Добавляем 2 трехпалубных корабля
+                shipCounts[4] += 1; // Добавляем 1 четырехпалубный корабль
+            }
+
+            if (StartWindow.mapSizeHeight == 15)
+            {
+                shipCounts[2] += 2; // Добавляем 2 двухпалубных корабля
+                shipCounts[4] += 2; // Добавляем 2 четырехпалубных корабля
+            }
+
+            if (StartWindow.mapSizeWidth == 15)
+            {
+                shipCounts[2] += 2; // Добавляем 2 двухпалубных корабля
+                shipCounts[4] += 2; // Добавляем 2 четырехпалубных корабля
+            }
+
+            return shipCounts;
+        }
+
+        private Dictionary<int, int> placedShips = new Dictionary<int, int>
+        {
+            { 1, 0 }, // Однопалубные
+            { 2, 0 }, // Двухпалубные
+            { 3, 0 }, // Трехпалубные
+            { 4, 0 }  // Четырехпалубные
+        };
+
         private bool CanPlaceShip(int startRow, int startCol, int length, bool horizontal)
         {
             for (int i = 0; i < length; i++)
@@ -376,17 +465,40 @@ namespace Sea_Battle
                 }
             }
 
+            // Сбрасываем счетчик размещенных кораблей
+            placedShips = new Dictionary<int, int>
+            {
+                { 1, 0 }, // Однопалубные
+                { 2, 0 }, // Двухпалубные
+                { 3, 0 }, // Трехпалубные
+                { 4, 0 }  // Четырехпалубные
+            };
+
             MessageBox.Show("Поле очищено от кораблей.", "Очистка поля", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private void StartButton_Click(object sender, EventArgs e)
         {
-            SeaBattleGame seaBattleGameForm = new SeaBattleGame(myMap,enemyMap, cellSize, alphabet);
+            var shipCounts = GetShipCounts();
+
+            // Проверяем, все ли корабли размещены
+            foreach (var key in shipCounts.Keys)
+            {
+                if (placedShips[key] < shipCounts[key])
+                {
+                    MessageBox.Show($"Вы должны разместить все корабли. Осталось разместить {shipCounts[key] - placedShips[key]} кораблей размером {key}.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+            }
+
+            // Если все корабли размещены, начинаем игру
+            SeaBattleGame seaBattleGameForm = new SeaBattleGame(myMap, enemyMap, cellSize, alphabet);
             seaBattleGameForm.Width = this.Width;
             seaBattleGameForm.Height = this.Height;
             seaBattleGameForm.Show();
             this.Hide();
         }
+
 
 
 
