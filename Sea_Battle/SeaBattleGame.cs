@@ -1,4 +1,4 @@
-﻿namespace Sea_Battle
+namespace Sea_Battle
 {
     public partial class SeaBattleGame : Form
     {
@@ -7,23 +7,22 @@
         private int cellSize;
         private string alphabet;
 
-        public static Button[,] playerButtons = new Button[StartWindow.mapSizeHeight + 1, StartWindow.mapSizeWidth + 1];
-        public static Button[,] botButtons = new Button[StartWindow.mapSizeHeight + 1, StartWindow.mapSizeWidth + 1];
+        public static Button[,] playerButtons;
+        public static Button[,] botButtons;
 
         public Bot bot;
 
-        public SeaBattleGame(int[,] map, int cellSize, string alphabet)
+        public SeaBattleGame(int[,] playerMap, int[,] botMap, int cellSize, string alphabet)
         {
             InitializeComponent();
             this.StartPosition = FormStartPosition.CenterScreen;
 
-            playerMap = map;
-            botMap = StowageShips.enemyMap;
+            this.playerMap = playerMap;
+            this.botMap = botMap;
             this.cellSize = cellSize;
             this.alphabet = alphabet;
-
-
-
+            playerButtons = new Button[StartWindow.mapSizeHeight + 1, StartWindow.mapSizeWidth + 1];
+            botButtons = new Button[StartWindow.mapSizeHeight + 1, StartWindow.mapSizeWidth + 1];
             GenerateMap();
         }
 
